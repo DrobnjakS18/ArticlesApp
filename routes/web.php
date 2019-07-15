@@ -11,6 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//LOGIN
+Route::get('/', 'LoginController@index');
+Route::post('/log', 'LoginController@log');
+Route::get('/log','LoginController@logout');
+
+
+Route::group(['middleware' => ['user']], function () {
+
+    Route::get('/articles','HomeContoller@index');
+
 });
+
+
+
+
+
