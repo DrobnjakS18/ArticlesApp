@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use Illuminate\Http\Request;
 
 class HomeContoller extends Controller
 {
+
+    private $data = [];
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +16,12 @@ class HomeContoller extends Controller
      */
     public function index()
     {
-        return view('pages.home');
+
+        $article_obj = new Article();
+
+
+        $this->data['articles'] = $article_obj->getAll();
+        return view('pages.home',$this->data);
     }
 
     /**
@@ -23,7 +31,7 @@ class HomeContoller extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.insert_post');
     }
 
     /**
@@ -34,8 +42,55 @@ class HomeContoller extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+
+            'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
+            'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
+            'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]{1,19}$/',
+            'customOther' => 'required|file|mimes:jpg,jpeg,png|max:2000',
+        ]);
+
+        $article_obj = new Article();
+
+        $article_obj->headline = $request->inputHeadline;
+        $article_obj->text = $request->inputText;
+
+        $picHead = $request->file('customFile');
+
+
+        $picName = $picHead->getClientOriginalName();
+        $picName = time().$picName;
+
+
+        $picOther = $request->file('customOther');
+
+        $picOtherName = $picOther->getClientOriginalName();
+        $picOtherName = time().$picOtherName;
+
+        try {
+
+            $picHead->move(public_path('images/'),$picName);
+            $picOther->move(public_path('images/'),$picOtherName);
+
+            $article_obj->headPic = $picName;
+            $article_obj->otherPic = $picOtherName;
+
+
+            $article_obj->insert();
+
+            return "Proslo";
+
+        }catch (\Exception $e){
+
+            return $e->getMessage();
+        }
+
+
+
+
+
     }
+
 
     /**
      * Display the specified resource.
@@ -45,7 +100,7 @@ class HomeContoller extends Controller
      */
     public function show($id)
     {
-        //
+//        return view('pages.post');
     }
 
     /**

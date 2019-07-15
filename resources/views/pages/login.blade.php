@@ -45,7 +45,7 @@
 
            var username = $('#username').val();
 
-           var usernameReg = /^([A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*){4,20}$/;
+           var usernameReg = /^[A-Za-z0-9][A-Za-z0-9]{3,19}$/;
 
            if(!usernameReg.test(username)){
 
@@ -55,7 +55,7 @@
 
            var pass = $('#password').val();
 
-           var passReg = /^([A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*){4,32}$/;
+           var passReg = /^[A-Za-z0-9][A-Za-z0-9]{3,31}$/;
 
            if(!passReg.test(pass)){
 

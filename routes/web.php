@@ -11,6 +11,8 @@
 |
 */
 
+Route::pattern('id', '[0-9]+');
+
 //LOGIN
 Route::get('/', 'LoginController@index');
 Route::post('/log', 'LoginController@log');
@@ -20,7 +22,9 @@ Route::get('/log','LoginController@logout');
 Route::group(['middleware' => ['user']], function () {
 
     Route::get('/articles','HomeContoller@index');
-
+    Route::get('/articles/{id}','HomeContoller@show');
+    Route::get('/articles/create' ,'HomeContoller@create')->name('insert_article');
+    Route::post('/articles','HomeContoller@store');
 });
 
 

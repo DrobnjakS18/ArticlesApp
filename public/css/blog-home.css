@@ -32,3 +32,14 @@ body {
 
   display: none;
 }
+
+#insert_error {
+
+  display: none;
+}
+
+.forms {
+
+  margin-top: 60px;
+  margin-bottom: 420px;
+}

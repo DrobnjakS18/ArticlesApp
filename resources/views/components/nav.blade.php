@@ -6,11 +6,11 @@
 
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item ">
-                        <a class="nav-link" href="#">Home
+                        <a class="nav-link" href="{{asset('/articles')}}">Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Insert Article</a>
+                        <a class="nav-link" href="{{route('insert_article')}}">Insert Article</a>
                     </li>
 
                 </ul>

@@ -15,60 +15,22 @@
         @endif
         <h1 class="my-4">Latest Articles
         </h1>
-
+        @foreach($articles as $article)
         <!-- Blog Post -->
         <div class="card mb-4">
-            <img class="card-img-top" src="images/post1.jpg" alt="Card image cap">
+            <img class="card-img-top" src="{{asset('images')."/".$article->path}}" alt="{{$article->alt}}">
             <div class="card-body">
-                <h2 class="card-title">Post Title</h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <h2 class="card-title">{{$article->headline}}</h2>
+                <p class="card-text">{{$article->text}}</p>
                 <a href="post.html" class="btn btn-primary">Read More &rarr;</a>
             </div>
             <div class="card-footer text-muted">
-                Posted on January 1, 2017 by
-                <a href="#">Start Bootstrap</a>
+                Posted on {{$article->date_created}} by
+                <a href="#">{{$article->username}}</a>
             </div>
         </div>
         <!--// Blog Post -->
-
-
-        <!-- Blog Post -->
-        <div class="card mb-4">
-            <img class="card-img-top" src="images/post2.jpg" alt="Card image cap">
-            <div class="card-body">
-                <h2 class="card-title">Post Title</h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                <a href="post.html" class="btn btn-primary">Read More &rarr;</a>
-            </div>
-            <div class="card-footer text-muted">
-                Posted on January 1, 2017 by
-                <a href="#">Start Bootstrap</a>
-            </div>
-        </div>
-
-        <!-- Blog Post -->
-        <div class="card mb-4">
-            <img class="card-img-top" src="images/post3.jpg" alt="Card image cap">
-            <div class="card-body">
-                <h2 class="card-title">Post Title</h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                <a href="post.html" class="btn btn-primary">Read More &rarr;</a>
-            </div>
-            <div class="card-footer text-muted">
-                Posted on January 1, 2017 by
-                <a href="#">Start Bootstrap</a>
-            </div>
-        </div>
-
-        <!-- Pagination -->
-        <ul class="pagination justify-content-center mb-4">
-            <li class="page-item">
-                <a class="page-link" href="#">&larr; Older</a>
-            </li>
-            <li class="page-item disabled">
-                <a class="page-link" href="#">Newer &rarr;</a>
-            </li>
-        </ul>
+        @endforeach
 
     </div>
     <!--// Sadrzaj -->

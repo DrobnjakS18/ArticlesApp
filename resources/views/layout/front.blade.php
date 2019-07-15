@@ -22,9 +22,10 @@
 
     <div class="row">
 
-@yield('home')
-@yield('login')
-
+        @yield('home')
+        @yield('login')
+        @yield('single')
+        @yield('insert')
 
     </div>
 
