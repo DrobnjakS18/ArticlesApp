@@ -25,6 +25,8 @@ Route::group(['middleware' => ['user']], function () {
     Route::get('/articles/{id}','HomeContoller@show')->name('single_article');
     Route::get('/articles/create' ,'HomeContoller@create')->name('insert_article');
     Route::post('/articles','HomeContoller@store');
+    Route::get('/articles/delete/{id}' ,'HomeContoller@destroy')->name('delete_art');
+    Route::get('/user/{id}','LoginController@user')->name('user_articles');
 
 });
 

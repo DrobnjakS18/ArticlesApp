@@ -58,6 +58,7 @@ class HomeContoller extends Controller
 
             $article_obj->headline = $request->inputHeadline;
             $article_obj->text = $request->inputText;
+            $article_obj->userid = session('user')->id;
 
             $picHead = $request->file('customFile');
 
@@ -82,7 +83,7 @@ class HomeContoller extends Controller
             }catch (\Exception $e){
 
                 \Log::info('Failed to insert article  error: '.$e->getMessage());
-                return redirect()->back()->with('insert_article_error',"Application is not working, please come back later");
+                return redirect()->back()->with('insert_article_error',"Article with no other pictures erroe");
             }
 
 
@@ -103,6 +104,7 @@ class HomeContoller extends Controller
 
             $article_obj->headline = $request->inputHeadline;
             $article_obj->text = $request->inputText;
+            $article_obj->userid = session('user')->id;
 
             $picHead = $request->file('customFile');
 
@@ -119,9 +121,12 @@ class HomeContoller extends Controller
 
         try {
 
+
+
             $picHead->move(public_path('images/'),$picName);
 
             foreach ($picOther as $onePic){
+
 
                 $picOtherName = time().$onePic->getClientOriginalName();
                 $onePic->move(public_path('images/'),$picOtherName);
@@ -139,8 +144,10 @@ class HomeContoller extends Controller
 
         }catch (\Exception $e){
 
-            \Log::info('Failed to insert article  error: '.$e->getMessage());
-            return redirect()->back()->with('insert_article_error_other_pic',"Application is not working, please come back later");
+//            \Log::info('Failed to insert article  error: '.$e->getMessage());
+//            return redirect()->back()->with('insert_article_error_other_pic',"Article with other pictures error");
+
+            return $e->getMessage();
         }
 
 
@@ -208,6 +215,55 @@ class HomeContoller extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        $article_obj = new Article();
+
+
+        try{
+            $article = $article_obj->getOne($id);
+
+
+            if($article == null)
+            {
+
+                $articleOtherPic = $article_obj->getOneNoOtherPIctures($id);
+
+                $art_id = $articleOtherPic->ArtId;
+
+                $article_obj->delete($art_id);
+
+                $putanja = public_path('images/').$articleOtherPic->path;
+
+
+
+                if (file_exists($putanja)){
+                    if (unlink($putanja)) {
+                        return redirect()->back();
+                    } else {
+                        \Log::info('Failed to insert article  error: ');
+                        return redirect()->back()->with('delete_article_error',"Failed to delete article");
+                    }
+                } else {
+                    \Log::info('Failed to insert article  error: ');
+                    return redirect()->back()->with('delete_article_error',"Failed to delete article");
+                }
+
+
+
+            }else {
+
+                //DOHVATA SAMO JENDU DODATNU SLIKU, A TREBAJU 3
+                //DOHVATITIT SVE DODATNE SLIKE PREKO UPITKA
+                dd($article);
+
+            }
+
+        }catch(\Exception $e){
+
+            return $e->getMessage();
+        }
+
+
+
     }
 }

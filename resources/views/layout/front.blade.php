@@ -26,6 +26,8 @@
         @yield('login')
         @yield('single')
         @yield('insert')
+        @yield('user_articles')
+
 
     </div>
 

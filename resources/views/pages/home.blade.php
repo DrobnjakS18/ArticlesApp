@@ -25,8 +25,8 @@
                 <a href="{{route('single_article',['id' => $article->ArtId])}}" class="btn btn-primary">Read More &rarr;</a>
             </div>
             <div class="card-footer text-muted">
-                Posted on {{$article->date_created}} by
-                <a href="#">{{$article->username}}</a>
+                Posted on {{ date("d M Y. H:i:s",strtotime($article->date_created))}} by
+                <a href="{{route('user_articles',['id' => $article->UserId])}}">{{$article->username}}</a>
             </div>
         </div>
         <!--// Blog Post -->

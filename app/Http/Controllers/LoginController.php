@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+    private $data = [];
+
     public function index() {
 
         return view('pages.login');
@@ -39,4 +41,22 @@ class LoginController extends Controller
         session()->flush();
         return redirect('/');
     }
+
+
+
+
+    public function user($id) {
+
+        $user_obj = new Users();
+
+        $user_art = $user_obj->user_articles($id);
+
+        $user = $user_obj->getUser($id);
+
+        $this->data['user_art'] = $user_art;
+        $this->data['user'] = $user;
+
+        return view('pages.user_article',$this->data);
+    }
+
 }

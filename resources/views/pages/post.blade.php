@@ -2,7 +2,7 @@
 
 @section('title')
 
-    STAVITI NAZIV PROSLEDJENOG HEADLINE ZA TITLE
+    {{$single->headline}}
     @endsection
 
 @section('single')
@@ -17,7 +17,7 @@
         <!-- Author -->
         <p class="lead">
             by
-            <a href="#">{{$single->username}}</a>
+            <a href="{{route('user_articles',['id' => $single->UserId])}}">{{$single->username}}</a>
         </p>
 
         <hr>

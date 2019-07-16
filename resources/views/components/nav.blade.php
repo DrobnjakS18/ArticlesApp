@@ -18,7 +18,7 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">{{session('user')->username}}
+                            <a class="nav-link" href="{{route('user_articles',['id' => session('user')->id])}}">{{session('user')->username}}
                             </a>
                         </li>
                         <li class="nav-item">

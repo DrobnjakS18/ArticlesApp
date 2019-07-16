@@ -25,4 +25,21 @@ class Users
             ->first();
     }
 
+    public function user_articles($id){
+
+        return DB::table('article')
+            ->select('*','article.id as ArtID','users.id as UserId')
+            ->join('users','article.user_id','=','users.id')
+            ->where('article.user_id',$id)
+            ->get();
+    }
+
+    public function getUser($id){
+
+        return  DB::table('users')
+            ->where('id',$id)
+            ->first();
+
+    }
+
 }

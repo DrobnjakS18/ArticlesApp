@@ -13,18 +13,19 @@ use Illuminate\Support\Facades\DB;
 
 class Article
 {
-
+//    public $id;
     public $headline;
     public $headPic;
     public $text;
     public $otherPic = [];
     public $otherPicID = [];
+    public $userid;
 
 
     public function getAll() {
 
         return DB::table('article')
-            ->select('*','article.id as ArtId')
+            ->select('*','article.id as ArtId','users.id as UserId')
             ->join('users','article.user_id','=','users.id')
             ->orderByRaw('date_created desc')
             ->get();
@@ -34,7 +35,7 @@ class Article
     public function getOne($id) {
 
         return DB::table('article_other_pic')
-            ->select('*','article.id as ArtID')
+            ->select('*','article.id as ArtID','users.id as UserId')
             ->join('article','article_other_pic.art_id','=','article.id')
             ->join('other_picture', 'article_other_pic.pic_id','=','other_picture.id')
             ->join('users','article.user_id','=','users.id')
@@ -46,7 +47,7 @@ class Article
     public  function  getOneNoOtherPIctures($id){
 
         return DB::table('article')
-            ->select('*','article.id as ArtId')
+            ->select('*','article.id as ArtId','users.id as UserId')
             ->join('users','article.user_id','=','users.id')
             ->where('article.id',$id)
             ->first();
@@ -63,8 +64,8 @@ class Article
                     'path' => $this->headPic,
                     'alt' => $this->headline,
                     'text' => $this->text,
-                    'date_updated' => 0,
-                    'user_id' => 1
+//                    'date_updated' => 0,
+                    'user_id' => $this->userid
                 ]);
 
            foreach ($this->otherPic as $pic) {
@@ -72,8 +73,8 @@ class Article
               array_push($this->otherPicID,DB::table('other_picture')
                   ->insertGetId([
 
-                      'path' => $pic,
-                      'alt' => $this->headline,
+                      'other_path' => $pic,
+                      'other_alt' => $this->headline,
                   ]));
            }
 
@@ -101,9 +102,18 @@ class Article
                 'path' => $this->headPic,
                 'alt' => $this->headline,
                 'text' => $this->text,
-                'date_updated' => 0,
-                'user_id' => 1
+//                'date_updated' => 0,
+                'user_id' => $this->userid
             ]);
+
+    }
+
+
+    public function delete($id){
+
+            DB::table('article')
+                ->where('id',$id)
+                ->delete();
 
     }
 
