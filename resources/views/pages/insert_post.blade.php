@@ -9,6 +9,26 @@
 @section('insert')
 
     <div class="forms">
+        @if(session('insert_article'))
+            <div class="alert alert-success">
+                {{session('insert_article')}}
+            </div>
+        @endif
+        @if(session('insert_article_other_pic'))
+            <div class="alert alert-success">
+                {{session('insert_article_other_pic')}}
+            </div>
+        @endif
+        @if(session('insert_article_error'))
+            <div class="alert alert-danger">
+                {{session('insert_article_error')}}
+            </div>
+        @endif
+        @if(session('insert_article_error_other_pic'))
+            <div class="alert alert-danger">
+                {{session('insert_article_error_other_pic')}}
+            </div>
+        @endif
         <h2>Insert article</h2>
         <form action="{{asset('/articles')}}"  method="POST" enctype="multipart/form-data" onsubmit="return InsertProvera()">
             @csrf
@@ -28,13 +48,20 @@
                 <textarea class="form-control" id="inputText" name="inputText"></textarea>
             </div>
 
-            <div class="form-row">
                 <label for="customOther">Other pictures</label>
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="customOther" name="customOther">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                <div class="input-group increment">
+                    <div >
+                        <button class="btn btn-success" type="button"><i class="glyphicon glyphicon-plus"></i>Add</button>
+                    </div>
                 </div>
-            </div>
+                <div class="clone hide">
+                    <div class="control-group input-group" style="margin-top:10px">
+                        <input type="file" name="customOther[]" class="form-control">
+                        <div >
+                            <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                        </div>
+                    </div>
+                </div>
             <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Sign in</button>
         </form>
         <div class="alert alert-danger" id="insert_error"></div>
@@ -50,81 +77,105 @@
         </div>
 
 
+
     @endsection
 
 
 @section('appendJavaScript')
     @parent
 
-    {{--<script type="text/javascript">--}}
+    <script type="text/javascript">
 
-        {{--function InsertProvera() {--}}
+        function InsertProvera() {
 
-            {{--var errorArray = [];--}}
+            var errorArray = [];
 
-            {{--var headline = $('#inputHeadline').val();--}}
+            var headline = $('#inputHeadline').val();
 
-            {{--var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;--}}
+            var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;
 
-            {{--if(!headlineReg.test(headline)){--}}
+            if(!headlineReg.test(headline)){
 
-              {{--errorArray.push('Bad headline. max 50 chra')--}}
+              errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
 
-            {{--}--}}
+            }
 
-            {{--var headlinePic = $('#customFile').val();--}}
+            var headlinePic = $('#customFile').val();
 
-            {{--var headlinePicReg = /\.(jpg|jpeg|png)$/;--}}
-
-            {{--if(!headlinePicReg.test(headlinePic)){--}}
-
-                {{--errorArray.push('Bad picture.');--}}
-
-            {{--}--}}
-
-            {{--var text = $('#inputText').val();--}}
-
-            {{--var textReg = /^[\w][\w\s]*$/;--}}
-
-            {{--if(!textReg.test(text)) {--}}
-
-                {{--errorArray.push("Bad text.");--}}
-            {{--}--}}
-
-            {{--var otherPic = $('#customOther').val();--}}
+            var headlinePicReg = /\.(jpg|jpeg|png)$/;
 
 
-            {{--if(!headlinePicReg.test(otherPic)){--}}
+            if(!headlinePicReg.test(headlinePic)){
 
-                {{--errorArray.push('Bad picture.');--}}
+                errorArray.push('Bad picture.');
 
-            {{--}--}}
+            }
 
+            var text = $('#inputText').val();
 
-            {{--if(errorArray.length > 0 ){--}}
+            var textReg = /^[\w][\w\s]*$/;
 
-                {{--var displayError = "<ul>";--}}
+            if(!textReg.test(text)) {
 
-                {{--for(var i in errorArray){--}}
+                errorArray.push("Bad text.");
+            }
 
-                    {{--displayError += "<li>" + errorArray[i] + "</li>";--}}
-                {{--}--}}
+            var otherPic = $('#customOther').val();
 
-                {{--displayError += "</ul>";--}}
-
-
-                {{--$("#insert_error").html(displayError);--}}
-                {{--$('#insert_error').show();--}}
-
-                {{--return false;--}}
-
-            {{--}else {--}}
-
-                {{--return true;--}}
-            {{--}--}}
+            if(otherPic != null) {
 
 
-        {{--}--}}
-    {{--</script>--}}
+                if(!headlinePicReg.test(otherPic)){
+
+                    errorArray.push('Bad picture.');
+
+                }
+            }
+
+
+
+
+            if(errorArray.length > 0 ){
+
+                var displayError = "<ul>";
+
+                for(var i in errorArray){
+
+                    displayError += "<li>" + errorArray[i] + "</li>";
+                }
+
+                displayError += "</ul>";
+
+
+                $("#insert_error").html(displayError);
+                $('#insert_error').show();
+
+                return false;
+
+            }else {
+
+                return true;
+            }
+
+
+        }
+    </script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $(".btn-success").click(function(){
+                var html = $(".clone").html();
+                $(".increment").after(html);
+            });
+
+            $("body").on("click",".btn-danger",function(){
+                $(this).parents(".control-group").remove();
+            });
+
+        });
+    </script>
 
     @endsection

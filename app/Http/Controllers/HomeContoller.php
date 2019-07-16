@@ -42,50 +42,110 @@ class HomeContoller extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+
+        if($request->customOther == null) {
+
+            $request->validate([
+
+                'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
+                'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
+                'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+            ]);
+
+
+
+            $article_obj = new Article();
+
+            $article_obj->headline = $request->inputHeadline;
+            $article_obj->text = $request->inputText;
+
+            $picHead = $request->file('customFile');
+
+
+            $picName = $picHead->getClientOriginalName();
+            $picName = time().$picName;
+
+            try {
+
+                $picHead->move(public_path('images/'),$picName);
+
+
+                $article_obj->headPic = $picName;
+
+
+                $article_obj->insertOnlyheadline();
+
+
+
+                return redirect()->back()->with('insert_article','Article successfully inserted');
+
+            }catch (\Exception $e){
+
+                \Log::info('Failed to insert article  error: '.$e->getMessage());
+                return redirect()->back()->with('insert_article_error',"Application is not working, please come back later");
+            }
+
+
+
+        }else {
+
+
+
+            $request->validate([
 
             'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
             'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
-            'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]{1,19}$/',
-            'customOther' => 'required|file|mimes:jpg,jpeg,png|max:2000',
+            'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+            'customOther.*' => 'file|mimes:jpg,jpeg,png|max:2000',
         ]);
 
-        $article_obj = new Article();
+            $article_obj = new Article();
 
-        $article_obj->headline = $request->inputHeadline;
-        $article_obj->text = $request->inputText;
+            $article_obj->headline = $request->inputHeadline;
+            $article_obj->text = $request->inputText;
 
-        $picHead = $request->file('customFile');
-
-
-        $picName = $picHead->getClientOriginalName();
-        $picName = time().$picName;
+            $picHead = $request->file('customFile');
 
 
-        $picOther = $request->file('customOther');
+            $picName = $picHead->getClientOriginalName();
+            $picName = time().$picName;
 
-        $picOtherName = $picOther->getClientOriginalName();
-        $picOtherName = time().$picOtherName;
+
+
+            $picOther = $request->file('customOther');
+
+
+
 
         try {
 
             $picHead->move(public_path('images/'),$picName);
-            $picOther->move(public_path('images/'),$picOtherName);
+
+            foreach ($picOther as $onePic){
+
+                $picOtherName = time().$onePic->getClientOriginalName();
+                $onePic->move(public_path('images/'),$picOtherName);
+               array_push($article_obj->otherPic,$picOtherName);
+            }
+
+
 
             $article_obj->headPic = $picName;
-            $article_obj->otherPic = $picOtherName;
 
 
             $article_obj->insert();
 
-            return "Proslo";
+            return redirect()->back()->with('insert_article_other_pic','Article successfully inserted');
 
         }catch (\Exception $e){
 
-            return $e->getMessage();
+            \Log::info('Failed to insert article  error: '.$e->getMessage());
+            return redirect()->back()->with('insert_article_error_other_pic',"Application is not working, please come back later");
         }
 
 
+
+        }
 
 
 
@@ -100,7 +160,21 @@ class HomeContoller extends Controller
      */
     public function show($id)
     {
-//        return view('pages.post');
+
+        $article_ojb = new Article();
+
+        $single = $article_ojb->getOne($id);
+        $this->data['single'] = $single;
+
+        if($single == null) {
+
+            $single = $article_ojb->getOneNoOtherPIctures($id);
+            $this->data['single'] = $single;
+        }
+
+//        dd($single);
+
+        return view('pages.post',$this->data);
     }
 
     /**

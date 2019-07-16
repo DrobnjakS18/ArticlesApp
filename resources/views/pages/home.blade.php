@@ -18,11 +18,11 @@
         @foreach($articles as $article)
         <!-- Blog Post -->
         <div class="card mb-4">
-            <img class="card-img-top" src="{{asset('images')."/".$article->path}}" alt="{{$article->alt}}">
+            <img class="card-img-top"   height="200"src="{{asset('images')."/".$article->path}}" alt="{{$article->alt}}">
             <div class="card-body">
                     <h2 class="card-title">{{$article->headline}}</h2>
-                <p class="card-text">{{$article->text}}</p>
-                <a href="post.html" class="btn btn-primary">Read More &rarr;</a>
+                <p class="card-text">{{str_limit($article->text,240)}}</p>
+                <a href="{{route('single_article',['id' => $article->ArtId])}}" class="btn btn-primary">Read More &rarr;</a>
             </div>
             <div class="card-footer text-muted">
                 Posted on {{$article->date_created}} by

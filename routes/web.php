@@ -22,9 +22,10 @@ Route::get('/log','LoginController@logout');
 Route::group(['middleware' => ['user']], function () {
 
     Route::get('/articles','HomeContoller@index');
-    Route::get('/articles/{id}','HomeContoller@show');
+    Route::get('/articles/{id}','HomeContoller@show')->name('single_article');
     Route::get('/articles/create' ,'HomeContoller@create')->name('insert_article');
     Route::post('/articles','HomeContoller@store');
+
 });
 
 
