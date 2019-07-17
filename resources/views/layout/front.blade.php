@@ -27,7 +27,7 @@
         @yield('single')
         @yield('insert')
         @yield('user_articles')
-
+        @yield('update')
 
     </div>
 

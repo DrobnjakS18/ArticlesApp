@@ -62,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Sign in</button>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>
         </form>
         <div class="alert alert-danger" id="insert_error"></div>
         @if ($errors->any())

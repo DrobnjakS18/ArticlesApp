@@ -1,6 +1,6 @@
 @extends('layout.front')
 @section('title')
-
+    User Articles
     @endsection
 
 @section('user_articles')
@@ -27,8 +27,10 @@
                     <h2 class="card-title">{{$article->headline}}</h2>
                     <p class="card-text">{{str_limit($article->text,240)}}</p>
                     <a href="{{route('single_article',['id' => $article->ArtID])}}" class="btn btn-primary">Read More &rarr;</a>
-                    <a href="#" class="btn btn-success">Update</a>
+                    @if(session('user')->id == $user->id)
+                    <a href="{{route('edit_article',['id' => $article->ArtID])}}" class="btn btn-success">Update</a>
                     <a href="{{route('delete_art',['id' => $article->ArtID])}}" class="btn btn-danger">Delete</a>
+                    @endif
                 </div>
                 <div class="card-footer text-muted">
                     Posted on {{$article->date_created}} by

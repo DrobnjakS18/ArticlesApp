@@ -27,7 +27,9 @@ Route::group(['middleware' => ['user']], function () {
     Route::post('/articles','HomeContoller@store');
     Route::get('/articles/delete/{id}' ,'HomeContoller@destroy')->name('delete_art');
     Route::get('/user/{id}','LoginController@user')->name('user_articles');
-
+    Route::get('/articles/edit/{id}','HomeContoller@edit')->name('edit_article');
+    Route::post('/articles/update/{id}','HomeContoller@update')->name('update_aricle');
+    Route::get('/other/{id}','HomeContoller@deleteOther')->name('delete_other');
 });
 
 

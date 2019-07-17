@@ -23,8 +23,10 @@
         <hr>
 
         <!-- Date/Time -->
-        <p>Posted on {{ date("d M Y. H:i:s",strtotime($single->date_created))}}</p>
-
+        <p>Posted on {{ date("d M Y. ",strtotime($single->date_created))}}</p>
+        @if($single->date_updated != 0)
+            <p>Updated on {{ date("d M Y" ,$single->date_updated)}}</p>
+            @endif
         <hr>
 
         <!-- Preview Image -->
