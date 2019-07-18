@@ -30,7 +30,8 @@
             </div>
         @endif
         <h2>Insert article</h2>
-        <form action="{{asset('/articles')}}"  method="POST" enctype="multipart/form-data" onsubmit="return InsertProvera()">
+        {{--<form enctype="multipart/form-data" onclick="InsertProvera()">--}}
+            <form action="{{asset('/articles')}}"  method="POST" enctype="multipart/form-data" onsubmit="return InsertProvera()">
             @csrf
             <div class="form-group">
                 <label for="inputHeadline">Healine</label>
@@ -45,7 +46,7 @@
             </div>
             <div class="form-group">
                 <label for="inputText">Text</label>
-                <textarea class="form-control" id="inputText" name="inputText"></textarea>
+                <textarea class="form-control" id="inputText" name="inputText" rows="10" ></textarea>
             </div>
 
                 <label for="customOther">Other pictures</label>
@@ -63,8 +64,10 @@
                     </div>
                 </div>
             <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>
+                {{--<button type="button" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>--}}
         </form>
         <div class="alert alert-danger" id="insert_error"></div>
+            <div class="alert alert-danger" id="ajax_error"></div>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -85,85 +88,82 @@
     @parent
 
     <script type="text/javascript">
-
+        
         function InsertProvera() {
 
-            var errorArray = [];
+             var errorArray = [];
 
-            var headline = $('#inputHeadline').val();
+             var headline = $('#inputHeadline').val();
 
-            var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;
+             var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;
 
-            if(!headlineReg.test(headline)){
+             if(!headlineReg.test(headline)){
 
-              errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
+               errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
 
-            }
+             }
 
-            var headlinePic = $('#customFile').val();
+             var headlinePic = $('#customFile').val();
 
-            var headlinePicReg = /\.(jpg|jpeg|png)$/;
-
-
-            if(!headlinePicReg.test(headlinePic)){
-
-                errorArray.push('Bad picture.');
-
-            }
-
-            var text = $('#inputText').val();
-
-            var textReg = /^[\w][\w\s]*$/;
-
-            if(!textReg.test(text)) {
-
-                errorArray.push("Bad text.");
-            }
-
-            var otherPic = $('#customOther').val();
-
-            if(otherPic != null) {
+             var headlinePicReg = /\.(jpg|jpeg|png)$/;
 
 
-                if(!headlinePicReg.test(otherPic)){
+             if(!headlinePicReg.test(headlinePic)){
 
-                    errorArray.push('Bad picture.');
+                 errorArray.push('Bad picture.');
 
-                }
-            }
+             }
 
+             var text = $('#inputText').val();
 
+             var textReg = /^[\s\S]*$/;
 
+             if(!textReg.test(text)) {
 
-            if(errorArray.length > 0 ){
+                 errorArray.push("Bad text.");
+             }
 
-                var displayError = "<ul>";
+             var otherPic = $('#customOther').val();
 
-                for(var i in errorArray){
-
-                    displayError += "<li>" + errorArray[i] + "</li>";
-                }
-
-                displayError += "</ul>";
+             if(otherPic != null) {
 
 
-                $("#insert_error").html(displayError);
-                $('#insert_error').show();
+                 if(!headlinePicReg.test(otherPic)){
+
+                     errorArray.push('Bad picture.');
+
+                 }
+             }
+
+
+
+
+             if(errorArray.length > 0 ){
+
+                 var displayError = "<ul>";
+
+                 for(var i in errorArray){
+
+                     displayError += "<li>" + errorArray[i] + "</li>";
+                 }
+
+                 displayError += "</ul>";
+
+
+                 $("#insert_error").html(displayError);
+                 $('#insert_error').show();
 
                 return false;
 
-            }else {
+             }else{
 
-                return true;
-            }
+                 return true
+             }
 
 
         }
-    </script>
 
 
-
-    <script type="text/javascript">
         $(document).ready(function() {
 
             $(".btn-success").click(function(){
@@ -176,6 +176,66 @@
             });
 
         });
+
     </script>
+
+    {{--function InsertProvera() {--}}
+
+
+    {{--var headline = $('#inputHeadline').val();--}}
+
+
+    {{--var headlinePic = $('#customFile').val();--}}
+
+    {{--var text = $('#inputText').val();--}}
+
+
+    {{--var otherPic = $('#customOther').val();--}}
+
+
+
+    {{--$.ajax({--}}
+
+    {{--method:'POST',--}}
+    {{--url:'/articles' ,--}}
+    {{--data:{--}}
+    {{--inputHeadline: headline,--}}
+    {{--customFile: headlinePic,--}}
+    {{--inputText: text,--}}
+    {{--customOther: otherPic,--}}
+    {{--_token: '{{csrf_token()}}'--}}
+
+    {{--},--}}
+    {{--dataType:'json',--}}
+    {{--success:function () {--}}
+
+    {{--},--}}
+    {{--error:function (jqXHR, exception) {--}}
+
+    {{--var status = jqXHR.status;--}}
+    {{--var errObj=jQuery.parseJSON(jqXHR.responseText);--}}
+
+    {{--// if(status == 422){--}}
+    {{--//--}}
+    {{--//--}}
+    {{--//     $("#ajax_error").append('<li>'+errObj.errors.inputHeadline+'</li>');--}}
+    {{--//     $("#ajax_error").append('<li>'+errObj.errors.customFile+'</li>');--}}
+    {{--//     $("#ajax_error").append('<li>'+errObj.errors.inputText+'</li>');--}}
+    {{--//     $("#ajax_error").append('<li>'+errObj.errors.customOther+'</li>');--}}
+    {{--//     $('#ajax_error').show();--}}
+    {{--// }--}}
+
+
+
+    {{--// if(status == 422){--}}
+    {{--//--}}
+    {{--//     alert(Status);--}}
+    {{--// }--}}
+    {{--//--}}
+    {{--// } });--}}
+    {{--//--}}
+    {{----}}
+
+
 
     @endsection

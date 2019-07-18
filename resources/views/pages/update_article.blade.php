@@ -47,7 +47,7 @@
 
                     <img  class="rounded float-left" src="{{asset('images').'/'.$other->other_path}}" alt="{{$other->other_alt}}" width="200px" height="200px"/>
                 </div>
-                <a href="{{route('delete_other',['id' => $other->pic_id ])}}" class="badge badge-danger" style="padding: 10px">Delete</a>
+                <a href="" onclick="deleteOtherPic({{$other->picId }})" class="badge badge-danger" style="padding: 10px">Delete</a>
 
             @endforeach
         @endif
@@ -100,6 +100,25 @@
             });
 
         });
+
+        function deleteOtherPic(id) {
+
+            $.ajax({
+
+                method:'GET',
+                url:'/other/' +id,
+                dataType:'json',
+                success:function () {
+
+                },
+                error:function () {
+
+                }
+            });
+        }
+
+
+
     </script>
 
 @endsection

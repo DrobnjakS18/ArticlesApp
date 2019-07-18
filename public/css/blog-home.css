@@ -38,6 +38,17 @@ body {
   display: none;
 }
 
+#pagination_center{
+
+  margin-left: 50%;
+
+}
+
+#ajax_error {
+
+  display: none;
+}
+
 .forms {
 
   margin-top: 60px;

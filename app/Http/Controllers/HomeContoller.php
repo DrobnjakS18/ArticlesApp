@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use function MongoDB\BSON\toJSON;
 use mysql_xdevapi\Exception;
+use Illuminate\Http\Response;
+use Psy\Util\Json;
 
 class HomeContoller extends Controller
 {
@@ -21,9 +24,9 @@ class HomeContoller extends Controller
 
         $article_obj = new Article();
 
-
         $this->data['articles'] = $article_obj->getAll();
         return view('pages.home',$this->data);
+
     }
 
     /**
@@ -31,6 +34,8 @@ class HomeContoller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
     public function create()
     {
         return view('pages.insert_post');
@@ -47,11 +52,13 @@ class HomeContoller extends Controller
 
         if($request->customOther == null) {
 
+
+
             $request->validate([
 
                 'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
                 'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
-                'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+                'inputText' => 'required|regex:/^[\s\S]*$/',
             ]);
 
 
@@ -93,12 +100,11 @@ class HomeContoller extends Controller
         }else {
 
 
-
             $request->validate([
 
             'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
             'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
-            'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+            'inputText' => 'required|regex:/^[\s\S]*$/',
             'customOther.*' => 'file|mimes:jpg,jpeg,png|max:2000',
         ]);
 
@@ -449,14 +455,12 @@ class HomeContoller extends Controller
 
                 if (file_exists($putanja)){
                     if (unlink($putanja)) {
-                        return redirect()->back();
+
                     } else {
                         \Log::info('Failed to delete article  error.');
-                        return redirect()->back()->with('delete_article_error',"Failed to delete article");
                     }
                 } else {
                     \Log::info('Failed to delete article  error.');
-                    return redirect()->back()->with('delete_article_error',"Failed to delete article");
                 }
 
 
@@ -491,17 +495,15 @@ class HomeContoller extends Controller
 
                 foreach ($putanja as $path){
                     unlink($path);
-
                     }
 
-                    return redirect()->back();
+
 
             }
 
         }catch(\Exception $e){
 
             \Log::info('Failed to delete article  error: '.$e->getMessage());
-            return redirect()->back()->with('insert_article_error_other_pic',"Article with other pictures error");
         }
 
 
@@ -509,7 +511,6 @@ class HomeContoller extends Controller
     }
 
     public function deleteOther($id){
-
 
         $pic_obj = new Article();
 
@@ -525,17 +526,15 @@ class HomeContoller extends Controller
             $pic_obj->deletOther();
 
             if (unlink($putanja)) {
-                return redirect()->back();
+
+
             } else {
                 \Log::info('Failed to delete article  error.');
-                return redirect()->back()->with('update_fail',"Failed to delete article");
+
             }
 
         }catch(\Exception $e) {
-
             \Log::info('Failed to delete other pictures  error: '.$e->getMessage());
-            return redirect()->back()->with('update_fail',"Failed to delete other picture");
-
 
         }
 

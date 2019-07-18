@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Users;
 use Illuminate\Http\Request;
+use \Psy\Util\Json;
+
 
 class LoginController extends Controller
 {
@@ -47,16 +49,29 @@ class LoginController extends Controller
 
     public function user($id) {
 
+
+        $user_obj = new Users();
+
+//        $user_art = $user_obj->user_articles($id);
+//
+//        $this->data['user_art'] = $user_art;
+
+        $user = $user_obj->getUser($id);
+        $this->data['user'] = $user;
+
+        return view('pages.user_article',$this->data);
+
+    }
+
+    public function showUserAritcles($id) {
+
         $user_obj = new Users();
 
         $user_art = $user_obj->user_articles($id);
 
-        $user = $user_obj->getUser($id);
 
-        $this->data['user_art'] = $user_art;
-        $this->data['user'] = $user;
+        return Json::encode($user_art);
 
-        return view('pages.user_article',$this->data);
     }
 
 }

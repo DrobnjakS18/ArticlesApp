@@ -22,11 +22,13 @@ Route::get('/log','LoginController@logout');
 Route::group(['middleware' => ['user']], function () {
 
     Route::get('/articles','HomeContoller@index');
+
     Route::get('/articles/{id}','HomeContoller@show')->name('single_article');
     Route::get('/articles/create' ,'HomeContoller@create')->name('insert_article');
     Route::post('/articles','HomeContoller@store');
     Route::get('/articles/delete/{id}' ,'HomeContoller@destroy')->name('delete_art');
     Route::get('/user/{id}','LoginController@user')->name('user_articles');
+    Route::get('/user/show_articles/{id}','LoginController@showUserAritcles')->name('user_articles_ajax');
     Route::get('/articles/edit/{id}','HomeContoller@edit')->name('edit_article');
     Route::post('/articles/update/{id}','HomeContoller@update')->name('update_aricle');
     Route::get('/other/{id}','HomeContoller@deleteOther')->name('delete_other');

@@ -29,7 +29,7 @@ class Article
             ->select('*','article.id as ArtId','users.id as UserId')
             ->join('users','article.user_id','=','users.id')
             ->orderByRaw('date_created desc')
-            ->get();
+            ->paginate(4);
     }
 
 

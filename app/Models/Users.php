@@ -31,6 +31,7 @@ class Users
             ->select('*','article.id as ArtID','users.id as UserId')
             ->join('users','article.user_id','=','users.id')
             ->where('article.user_id',$id)
+            ->orderByRaw('date_created desc')
             ->get();
     }
 
