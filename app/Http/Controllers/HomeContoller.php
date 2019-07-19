@@ -10,6 +10,7 @@ use mysql_xdevapi\Exception;
 use Illuminate\Http\Response;
 use Psy\Util\Json;
 
+
 class HomeContoller extends Controller
 {
 
@@ -55,60 +56,47 @@ class HomeContoller extends Controller
 
             $request->validate([
 
-                'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
-//                'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
-                'customFile' => ['required', 'regex:/\.(jpe?g|png)$/'],
+                'inputHeadline' => 'required|regex:/^[\s\S]{1,144}$/',
+                'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
                 'inputText' => 'required|regex:/^[\s\S]*$/',
             ]);
 
-
-
-            $arr = explode('\\',$request->customFile);
 
 
             $article_obj = new Article();
 
             $article_obj->headline = $request->inputHeadline;
             $article_obj->text = $request->inputText;
-            $article_obj->userid = session('user')->id;
+            $article_obj->userid = $request->user_id;
 
 
-            $picHead = $_FILES['customFile'];
-
-            dd($picHead);
+            $picHead = $request->file('customFile');
 
 
-            $picName = $arr[2];
+
+            $picName = $picHead->getClientOriginalName();
             $picName = time().$picName;
 
 
+            try {
 
-//
-//            $picHead = $request->file('customFile');
-//
-//
-//            $picName = $picHead->getClientOriginalName();
-//            $picName = time().$picName;
-//
-//            try {
-//
-//                $picHead->move(public_path('images/'),$picName);
-//
-//
-//                $article_obj->headPic = $picName;
-//
-//
-//                $article_obj->insertOnlyheadline();
-//
-//
-//
-//                return redirect()->back()->with('insert_article','Article successfully inserted');
-//
-//            }catch (\Exception $e){
-//
-//                \Log::info('Failed to insert article  error: '.$e->getMessage());
-//                return redirect()->back()->with('insert_article_error',"Article with no other pictures erroe");
-//            }
+                $picHead->move(public_path('images/'),$picName);
+
+
+                $article_obj->headPic = $picName;
+
+                $article_obj->insertOnlyheadline();
+
+                $success = "Image succesfully inserted";
+                return Json::encode($success);
+
+            }catch (\Exception $e){
+
+                \Log::info('Failed to insert article  error: '.$e->getMessage());
+                return \response('Error',400 );
+            }
+
+
 
 
 
@@ -117,7 +105,7 @@ class HomeContoller extends Controller
 
             $request->validate([
 
-            'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
+            'inputHeadline' => 'required|regex:/^[\s\S]{1,144}$/',
             'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
             'inputText' => 'required|regex:/^[\s\S]*$/',
             'customOther.*' => 'file|mimes:jpg,jpeg,png|max:2000',
@@ -127,7 +115,7 @@ class HomeContoller extends Controller
 
             $article_obj->headline = $request->inputHeadline;
             $article_obj->text = $request->inputText;
-            $article_obj->userid = session('user')->id;
+            $article_obj->userid = $request->user_id;
 
             $picHead = $request->file('customFile');
 
@@ -163,12 +151,14 @@ class HomeContoller extends Controller
 
             $article_obj->insert();
 
-            return redirect()->back()->with('insert_article','Article successfully inserted');
+
+            $success = "Image succesfully inserted";
+            return Json::encode($success);
 
         }catch (\Exception $e){
 
             \Log::info('Failed to insert article  error: '.$e->getMessage());
-            return redirect()->back()->with('insert_article_error',"Article with other pictures error");
+            return \response('Error',400 );
 
 
         }
@@ -280,8 +270,8 @@ class HomeContoller extends Controller
 
             $request->validate([
 
-                'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
-                'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+                'inputHeadline' => 'required|regex:/^[\s\S]{1,144}$/',
+                'inputText' => 'required|regex:/^[\s\S]*$/',
             ]);
 
 
@@ -304,9 +294,9 @@ class HomeContoller extends Controller
 
             $request->validate([
 
-                'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
+                'inputHeadline' => 'required|regex:/^[\s\S]{1,144}$/',
                 'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
-                'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+                'inputText' => 'required|regex:/^[\s\S]*$/',
             ]);
 
             $article_obj->headline = $request->inputHeadline;
@@ -339,8 +329,8 @@ class HomeContoller extends Controller
 
             $request->validate([
 
-                'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
-                'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+                'inputHeadline' => 'required|regex:/^[\s\S]{1,144}$/',
+                'inputText' => 'required|regex:/^[\s\S]*$/',
                 'customOther.*' => 'file|mimes:jpg,jpeg,png|max:2000',
             ]);
 
@@ -383,9 +373,9 @@ class HomeContoller extends Controller
 
             $request->validate([
 
-                'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
+                'inputHeadline' => 'required|regex:/^[\s\S]{1,144}$/',
                 'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
-                'inputText' => 'required|regex:/^[A-Za-z0-9][A-Za-z0-9: _-]*$/',
+                'inputText' => 'required|regex:/^[\s\S]*$/',
                 'customOther.*' => 'file|mimes:jpg,jpeg,png|max:2000',
             ]);
 

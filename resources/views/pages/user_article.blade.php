@@ -20,25 +20,6 @@
         <h1 class="my-4">{{$user->username}} articles
         </h1>
             <div class="user_aritcle"></div>
-        {{--@foreach($user_art as $article)--}}
-        {{--<!-- Blog Post -->--}}
-            {{--<div class="card mb-4">--}}
-                {{--<img class="card-img-top"   height="200"src="{{asset('images')."/".$article->path}}" alt="{{$article->alt}}">--}}
-                {{--<div class="card-body">--}}
-                    {{--<h2 class="card-title">{{$article->headline}}</h2>--}}
-                    {{--<p class="card-text">{{str_limit($article->text,240)}}</p>--}}
-                    {{--<a href="{{route('single_article',['id' => $article->ArtID])}}" class="btn btn-primary">Read More &rarr;</a>--}}
-                    {{--@if(session('user')->id == $user->id)--}}
-                    {{--<a href="{{route('edit_article',['id' => $article->ArtID])}}" class="btn btn-success">Update</a>--}}
-                    {{--<a href="" onclick="deleteArticle({{$article->ArtID}})" class="btn btn-danger">Delete</a>--}}
-                    {{--@endif--}}
-                {{--</div>--}}
-                {{--<div class="card-footer text-muted">--}}
-                    {{--Posted on {{$article->date_created}}--}}
-                {{--</div>--}}
-            {{--</div>--}}
-            {{--<!--// Blog Post -->--}}
-        {{--@endforeach--}}
 
     </div>
     @endsection
@@ -64,7 +45,7 @@
                     for (var i in data) {
 
                         tmp += '  <div class="card mb-4">\n'
-                        tmp += '                <img class="card-img-top"   height="200" src="/images/' + data[i].path + '" alt="' + data[i].alt + '">\n'
+                        tmp += '                <img class="card-img-top"   src="/images/' + data[i].path + '" alt="' + data[i].alt + '">\n'
                         tmp += '                <div class="card-body">\n'
                         tmp += '                    <h2 class="card-title">' + data[i].headline + '</h2>\n'
                         tmp += '                    <p class="card-text">' + data[i].text.substr(0,240)+ '</p>\n'
@@ -120,6 +101,8 @@
 
                     var status = xhr.status;
 
+
+
                     switch (status) {
 
                         case 404:
@@ -129,7 +112,7 @@
                             alert('Failed to delete image.Bad request');
                             break;
                         default:
-                            alert('Failed to delete image.Error' +Status);
+                            alert('Failed to delete image.Error' +Status + 'status ' + status);
                             break;
 
 

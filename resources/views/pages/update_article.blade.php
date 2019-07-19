@@ -124,7 +124,7 @@
                             alert('Failed to delete image.Bad request');
                             break;
                         default:
-                            alert('Failed to delete image.Error' +Status);
+                            alert('Failed to delete image.Error' +Status + 'status ' + status);
                             break;
 
 

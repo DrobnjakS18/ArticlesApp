@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+
     <title>ArticleApp | @yield('title')</title>
 
     @section('appednCSS')

@@ -20,7 +20,7 @@
         @foreach($articles as $article)
         <!-- Blog Post -->
         <div class="card mb-4">
-            <img class="card-img-top"   height="200"src="{{asset('images')."/".$article->path}}" alt="{{$article->alt}}">
+            <img class="card-img-top"   src="{{asset('images')."/".$article->path}}" alt="{{$article->alt}}">
             <div class="card-body">
                     <h2 class="card-title">{{$article->headline}}</h2>
                 <p class="card-text">{{str_limit($article->text,240)}}</p>
@@ -41,59 +41,3 @@
     </div>
     <!--// Sadrzaj -->
     @endsection
-
-
-{{--@section('appendJavaScript')--}}
-    {{--@parent--}}
-
-    {{--<script type="text/javascript">--}}
-
-        {{--// $( document ).ready(function () {--}}
-        {{--//--}}
-        {{--//     $.ajax({--}}
-        {{--//         type: "GET",--}}
-        {{--//         url: '/articles/all',--}}
-        {{--//         dataType: 'json',--}}
-        {{--//         success: function (data) {--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//             var data = data.articles.data;--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//             var tmp = "";--}}
-        {{--//             for(var i in data ){--}}
-        {{--//--}}
-        {{--//                 tmp += '  <div class="card mb-4">\n'--}}
-        {{--//                 tmp +='                <img class="card-img-top"   height="200" src="/images/'+data[i].path+'" alt="'+data[i].alt+'">\n'--}}
-        {{--//                 tmp +='                <div class="card-body">\n'--}}
-        {{--//                 tmp +='                    <h2 class="card-title">'+data[i].headline+'</h2>\n'--}}
-        {{--//                 tmp +='                    <p class="card-text">'+data[i].text.substr(0,240)+'</p>\n'--}}
-        {{--//                 tmp +='                    <a href="/articles/'+data[i].ArtId+'" class="btn btn-primary">Read More &rarr;</a>\n'--}}
-        {{--//                 tmp +='                </div>\n'--}}
-        {{--//                 tmp +='                <div class="card-footer text-muted">\n'--}}
-        {{--//                 tmp +='                    Posted on '+data[i].date_created+'\n'--}}
-        {{--//                 tmp += '<a href="" >'+data[i].username+'</a>'--}}
-        {{--//                 tmp +='                </div>\n'--}}
-        {{--//                 tmp +='            </div>';--}}
-        {{--//--}}
-        {{--//             }--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//             $('.all_articles').html(tmp);--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//--}}
-        {{--//         },--}}
-        {{--//         error: function () {--}}
-        {{--//--}}
-        {{--//         }--}}
-        {{--//--}}
-        {{--//     })--}}
-        {{--//--}}
-        {{--// });--}}
-
-    {{--</script>--}}
-
-{{--@endsection--}}

@@ -9,20 +9,10 @@
 @section('insert')
 
     <div class="forms">
-        @if(session('insert_article'))
-            <div class="alert alert-success">
-                {{session('insert_article')}}
-            </div>
-        @endif
-        @if(session('insert_article_error'))
-            <div class="alert alert-danger">
-                {{session('insert_article_error')}}
-            </div>
-        @endif
+
         <h2>Insert article</h2>
-        <form enctype="multipart/form-data" >
-            {{--<form action="{{asset('/articles')}}"  method="POST" enctype="multipart/form-data" onsubmit="return InsertProvera()">--}}
-            @csrf
+        <form enctype="multipart/form-data" id="insert_article">
+            {{ csrf_field() }}
             <div class="form-group">
                 <label for="inputHeadline">Healine</label>
                 <input type="text" class="form-control" id="inputHeadline" name="inputHeadline">
@@ -53,8 +43,8 @@
                         </div>
                     </div>
                 </div>
-            {{--<button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>--}}
-                <button type="button" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;"  onclick="InsertProvera()">Submit</button>
+                <input type="hidden" id="user_id" name="user_id" value="{{session('user')->id}}"/>
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;" ">Submit</button>
         </form>
         <div class="alert alert-danger" id="insert_error"></div>
             <div class="alert alert-danger" id="ajax_error"></div>
@@ -80,247 +70,133 @@
 
     <script type="text/javascript">
 
-        function InsertProvera() {
+        $(document).ready(function () {
+
+            $('#insert_article').on('submit', function (event) {
+                event.preventDefault();
+
+                var errorArray = [];
+
+                var headline = $('#inputHeadline').val();
+
+                var headlineReg = /^[\s\S]{1,144}$/;
+
+                if(!headlineReg.test(headline)){
+
+                errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
+
+                }
+
+                var headlinePic = document.getElementById('customFile');
+
+                var headPicValue = headlinePic.value;
+
+                var headlinePicReg = /\.(jpg|jpeg|png)$/;
 
 
-            var errorArray = [];
+                if(!headlinePicReg.test(headPicValue)){
 
-            var headline = $('#inputHeadline').val();
+                errorArray.push('Invalid image file.');
 
-            var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;
+                }
 
-            if(!headlineReg.test(headline)){
+                var text = $('#inputText').val();
 
-            errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
+                var textReg = /^[\s\S]*$/;
 
-            }
+                if(!textReg.test(text)) {
 
-            var headlinePic = document.getElementById('customFile');
+                errorArray.push("Bad text.");
+                }
 
-            var ext = headlinePic.split('.').pop().toLowerCase();
-            if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1)
-            {
-                alert("Invalid Image File");
-            }
+                var otherPic = $('#customOther').val();
 
-            console.log(headlinePic);
+                if(otherPic != null) {
 
-            var headlinePicReg = /\.(jpg|jpeg|png)$/;
+                if(!headlinePicReg.test(otherPic)){
 
+                errorArray.push('Bad picture.');
 
-            if(!headlinePicReg.test(headlinePic)){
+                }
 
-            errorArray.push('Bad picture.');
+                }
 
-            }
+                if(errorArray.length > 0 ){
 
-            var text = $('#inputText').val();
+                var displayError = "<ul>";
 
-            var textReg = /^[\s\S]*$/;
+                for(var i in errorArray){
 
-            if(!textReg.test(text)) {
+                displayError += "<li>" + errorArray[i] + "</li>";
+                }
 
-            errorArray.push("Bad text.");
-            }
-
-            var otherPic = $('#customOther').val();
-
-            if(otherPic != null) {
-
-            if(!headlinePicReg.test(otherPic)){
-
-            errorArray.push('Bad picture.');
-
-            }
-
-            }
-
-            if(errorArray.length > 0 ){
-
-            var displayError = "<ul>";
-
-            for(var i in errorArray){
-
-            displayError += "<li>" + errorArray[i] + "</li>";
-            }
-
-            displayError += "</ul>";
+                displayError += "</ul>";
 
 
-            $("#insert_error").html(displayError);
-            $('#insert_error').show();
+                $("#insert_error").html(displayError);
+                $('#insert_error').show();
 
 
-            }else{
+                }else{
 
-                alert("dobro je popunjeno");
+                    $('#insert_error').hide();
+                    $.ajax({
 
+                        method: 'POST',
+                        url: '/articles',
+                        data: new FormData(this),
+                        dataType: 'json',
+                        contentType:false,
+                        cache:false,
+                        processData: false,
+                        success: function (data) {
+                            alert(data);
+                        },
+                        error:function (xhr,Status,Error) {
 
-                {{--$.ajax({--}}
+                            var status = xhr.status;
 
-                {{--method: 'POST',--}}
-                {{--url: '/articles',--}}
-                {{--data: {--}}
-                {{--inputHeadline: headline,--}}
-                {{--customFile: headlinePic,--}}
-                {{--inputText: text,--}}
-                {{--customOther: otherPic,--}}
-                {{--_token: '{{csrf_token()}}'--}}
+                            switch (status) {
 
-                {{--},--}}
-                {{--dataType: 'json',--}}
-                {{--success: function () {--}}
+                                case 422:
+                                    alert('You entered invalid data.');
+                                    break;
+                                case 400:
+                                    alert('Bad request.');
+                                    break;
+                                default:
+                                    alert('Failed to insert adricle.Error' + Status + 'status ' + status);
+                                    break;
+                            }
 
-                {{--},--}}
-                {{--error: function (jqXHR, exception) {--}}
+                        }
 
-                {{--var status = jqXHR.status;--}}
-
-                {{--// alert(status);--}}
-                {{--// var errObj = jQuery.parseJSON(jqXHR.responseText);--}}
-                {{--//--}}
-                {{--// if (status == 422) {--}}
-                {{--//--}}
-                {{--//--}}
-                {{--// $("#ajax_error").append('<li>' + errObj.errors.inputHeadline + '</li>');--}}
-                {{--// $("#ajax_error").append('<li>' + errObj.errors.customFile + '</li>');--}}
-                {{--// $("#ajax_error").append('<li>' + errObj.errors.inputText + '</li>');--}}
-                {{--// $("#ajax_error").append('<li>' + errObj.errors.customOther + '</li>');--}}
-                {{--// $('#ajax_error').show();--}}
-                {{--// }--}}
-                {{--//--}}
-                {{--//--}}
-                {{--// if (status == 422) {--}}
-                {{--//--}}
-                {{--// alert(Status);--}}
-                {{--// }--}}
-
-                {{--}--}}
-                {{--});--}}
+                    });
 
 
-            }
+                }
 
 
-
-
-
-
+            });
 
 
             $(document).ready(function () {
 
-                $(".btn-success").click(function () {
-                    var html = $(".clone").html();
-                    $(".increment").after(html);
-                });
+            $(".btn-success").click(function () {
+            var html = $(".clone").html();
+            $(".increment").after(html);
+            });
 
-                $("body").on("click", ".btn-danger", function () {
-                    $(this).parents(".control-group").remove();
-                });
+            $("body").on("click", ".btn-danger", function () {
+            $(this).parents(".control-group").remove();
+            });
 
             });
 
-        }
+        });
+
 
     </script>
-
-
-
-    {{--<script type="text/javascript">--}}
-        {{----}}
-        {{--function InsertProvera() {--}}
-
-             {{--var errorArray = [];--}}
-
-             {{--var headline = $('#inputHeadline').val();--}}
-
-             {{--var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;--}}
-
-             {{--if(!headlineReg.test(headline)){--}}
-
-               {{--errorArray.push('Bad headline. max 50 chra, first letter uppercase.')--}}
-
-             {{--}--}}
-
-             {{--var headlinePic = $('#customFile').val();--}}
-
-             {{--var headlinePicReg = /\.(jpg|jpeg|png)$/;--}}
-
-
-             {{--if(!headlinePicReg.test(headlinePic)){--}}
-
-                 {{--errorArray.push('Bad picture.');--}}
-
-             {{--}--}}
-
-             {{--var text = $('#inputText').val();--}}
-
-             {{--var textReg = /^[\s\S]*$/;--}}
-
-             {{--if(!textReg.test(text)) {--}}
-
-                 {{--errorArray.push("Bad text.");--}}
-             {{--}--}}
-
-             {{--var otherPic = $('#customOther').val();--}}
-
-             {{--if(otherPic != null) {--}}
-
-
-                 {{--if(!headlinePicReg.test(otherPic)){--}}
-
-                     {{--errorArray.push('Bad picture.');--}}
-
-                 {{--}--}}
-             {{--}--}}
-
-
-
-
-             {{--if(errorArray.length > 0 ){--}}
-
-                 {{--var displayError = "<ul>";--}}
-
-                 {{--for(var i in errorArray){--}}
-
-                     {{--displayError += "<li>" + errorArray[i] + "</li>";--}}
-                 {{--}--}}
-
-                 {{--displayError += "</ul>";--}}
-
-
-                 {{--$("#insert_error").html(displayError);--}}
-                 {{--$('#insert_error').show();--}}
-
-                {{--return false;--}}
-
-             {{--}else{--}}
-
-                 {{--return true--}}
-             {{--}--}}
-
-
-        {{--}--}}
-
-
-        {{--$(document).ready(function() {--}}
-
-            {{--$(".btn-success").click(function(){--}}
-                {{--var html = $(".clone").html();--}}
-                {{--$(".increment").after(html);--}}
-            {{--});--}}
-
-            {{--$("body").on("click",".btn-danger",function(){--}}
-                {{--$(this).parents(".control-group").remove();--}}
-            {{--});--}}
-
-        {{--});--}}
-
-    {{--</script>--}}
-
-
-
 
 
 

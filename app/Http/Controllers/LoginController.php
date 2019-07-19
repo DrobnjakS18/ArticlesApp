@@ -52,9 +52,6 @@ class LoginController extends Controller
 
         $user_obj = new Users();
 
-//        $user_art = $user_obj->user_articles($id);
-//
-//        $this->data['user_art'] = $user_art;
 
         $user = $user_obj->getUser($id);
         $this->data['user'] = $user;
