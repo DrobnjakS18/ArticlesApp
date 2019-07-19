@@ -106,13 +106,30 @@
             $.ajax({
 
                 method:'GET',
-                url:'/other/' +id,
+                url:'/other/' + id,
                 dataType:'json',
-                success:function () {
-
+                success:function (data) {
+                    alert(data);
                 },
-                error:function () {
+                error:function (xhr,Status,Error) {
 
+                    var status = xhr.status;
+
+                    switch (status) {
+
+                        case 404:
+                            alert('Failed to delete image.');
+                            break;
+                        case 400:
+                            alert('Failed to delete image.Bad request');
+                            break;
+                        default:
+                            alert('Failed to delete image.Error' +Status);
+                            break;
+
+
+
+                    }
                 }
             });
         }

@@ -14,24 +14,14 @@
                 {{session('insert_article')}}
             </div>
         @endif
-        @if(session('insert_article_other_pic'))
-            <div class="alert alert-success">
-                {{session('insert_article_other_pic')}}
-            </div>
-        @endif
         @if(session('insert_article_error'))
             <div class="alert alert-danger">
                 {{session('insert_article_error')}}
             </div>
         @endif
-        @if(session('insert_article_error_other_pic'))
-            <div class="alert alert-danger">
-                {{session('insert_article_error_other_pic')}}
-            </div>
-        @endif
         <h2>Insert article</h2>
-        {{--<form enctype="multipart/form-data" onclick="InsertProvera()">--}}
-            <form action="{{asset('/articles')}}"  method="POST" enctype="multipart/form-data" onsubmit="return InsertProvera()">
+        <form enctype="multipart/form-data" >
+            {{--<form action="{{asset('/articles')}}"  method="POST" enctype="multipart/form-data" onsubmit="return InsertProvera()">--}}
             @csrf
             <div class="form-group">
                 <label for="inputHeadline">Healine</label>
@@ -63,8 +53,8 @@
                         </div>
                     </div>
                 </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>
-                {{--<button type="button" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>--}}
+            {{--<button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Submit</button>--}}
+                <button type="button" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;"  onclick="InsertProvera()">Submit</button>
         </form>
         <div class="alert alert-danger" id="insert_error"></div>
             <div class="alert alert-danger" id="ajax_error"></div>
@@ -87,154 +77,250 @@
 @section('appendJavaScript')
     @parent
 
+
     <script type="text/javascript">
-        
+
         function InsertProvera() {
 
-             var errorArray = [];
 
-             var headline = $('#inputHeadline').val();
+            var errorArray = [];
 
-             var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;
+            var headline = $('#inputHeadline').val();
 
-             if(!headlineReg.test(headline)){
+            var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;
 
-               errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
+            if(!headlineReg.test(headline)){
 
-             }
+            errorArray.push('Bad headline. max 50 chra, first letter uppercase.')
 
-             var headlinePic = $('#customFile').val();
+            }
 
-             var headlinePicReg = /\.(jpg|jpeg|png)$/;
+            var headlinePic = document.getElementById('customFile');
 
+            var ext = headlinePic.split('.').pop().toLowerCase();
+            if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1)
+            {
+                alert("Invalid Image File");
+            }
 
-             if(!headlinePicReg.test(headlinePic)){
+            console.log(headlinePic);
 
-                 errorArray.push('Bad picture.');
-
-             }
-
-             var text = $('#inputText').val();
-
-             var textReg = /^[\s\S]*$/;
-
-             if(!textReg.test(text)) {
-
-                 errorArray.push("Bad text.");
-             }
-
-             var otherPic = $('#customOther').val();
-
-             if(otherPic != null) {
+            var headlinePicReg = /\.(jpg|jpeg|png)$/;
 
 
-                 if(!headlinePicReg.test(otherPic)){
+            if(!headlinePicReg.test(headlinePic)){
 
-                     errorArray.push('Bad picture.');
+            errorArray.push('Bad picture.');
 
-                 }
-             }
+            }
+
+            var text = $('#inputText').val();
+
+            var textReg = /^[\s\S]*$/;
+
+            if(!textReg.test(text)) {
+
+            errorArray.push("Bad text.");
+            }
+
+            var otherPic = $('#customOther').val();
+
+            if(otherPic != null) {
+
+            if(!headlinePicReg.test(otherPic)){
+
+            errorArray.push('Bad picture.');
+
+            }
+
+            }
+
+            if(errorArray.length > 0 ){
+
+            var displayError = "<ul>";
+
+            for(var i in errorArray){
+
+            displayError += "<li>" + errorArray[i] + "</li>";
+            }
+
+            displayError += "</ul>";
+
+
+            $("#insert_error").html(displayError);
+            $('#insert_error').show();
+
+
+            }else{
+
+                alert("dobro je popunjeno");
+
+
+                {{--$.ajax({--}}
+
+                {{--method: 'POST',--}}
+                {{--url: '/articles',--}}
+                {{--data: {--}}
+                {{--inputHeadline: headline,--}}
+                {{--customFile: headlinePic,--}}
+                {{--inputText: text,--}}
+                {{--customOther: otherPic,--}}
+                {{--_token: '{{csrf_token()}}'--}}
+
+                {{--},--}}
+                {{--dataType: 'json',--}}
+                {{--success: function () {--}}
+
+                {{--},--}}
+                {{--error: function (jqXHR, exception) {--}}
+
+                {{--var status = jqXHR.status;--}}
+
+                {{--// alert(status);--}}
+                {{--// var errObj = jQuery.parseJSON(jqXHR.responseText);--}}
+                {{--//--}}
+                {{--// if (status == 422) {--}}
+                {{--//--}}
+                {{--//--}}
+                {{--// $("#ajax_error").append('<li>' + errObj.errors.inputHeadline + '</li>');--}}
+                {{--// $("#ajax_error").append('<li>' + errObj.errors.customFile + '</li>');--}}
+                {{--// $("#ajax_error").append('<li>' + errObj.errors.inputText + '</li>');--}}
+                {{--// $("#ajax_error").append('<li>' + errObj.errors.customOther + '</li>');--}}
+                {{--// $('#ajax_error').show();--}}
+                {{--// }--}}
+                {{--//--}}
+                {{--//--}}
+                {{--// if (status == 422) {--}}
+                {{--//--}}
+                {{--// alert(Status);--}}
+                {{--// }--}}
+
+                {{--}--}}
+                {{--});--}}
+
+
+            }
 
 
 
 
-             if(errorArray.length > 0 ){
-
-                 var displayError = "<ul>";
-
-                 for(var i in errorArray){
-
-                     displayError += "<li>" + errorArray[i] + "</li>";
-                 }
-
-                 displayError += "</ul>";
 
 
-                 $("#insert_error").html(displayError);
-                 $('#insert_error').show();
 
-                return false;
 
-             }else{
+            $(document).ready(function () {
 
-                 return true
-             }
+                $(".btn-success").click(function () {
+                    var html = $(".clone").html();
+                    $(".increment").after(html);
+                });
 
+                $("body").on("click", ".btn-danger", function () {
+                    $(this).parents(".control-group").remove();
+                });
+
+            });
 
         }
 
-
-        $(document).ready(function() {
-
-            $(".btn-success").click(function(){
-                var html = $(".clone").html();
-                $(".increment").after(html);
-            });
-
-            $("body").on("click",".btn-danger",function(){
-                $(this).parents(".control-group").remove();
-            });
-
-        });
-
     </script>
 
-    {{--function InsertProvera() {--}}
 
 
-    {{--var headline = $('#inputHeadline').val();--}}
+    {{--<script type="text/javascript">--}}
+        {{----}}
+        {{--function InsertProvera() {--}}
+
+             {{--var errorArray = [];--}}
+
+             {{--var headline = $('#inputHeadline').val();--}}
+
+             {{--var headlineReg = /^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/;--}}
+
+             {{--if(!headlineReg.test(headline)){--}}
+
+               {{--errorArray.push('Bad headline. max 50 chra, first letter uppercase.')--}}
+
+             {{--}--}}
+
+             {{--var headlinePic = $('#customFile').val();--}}
+
+             {{--var headlinePicReg = /\.(jpg|jpeg|png)$/;--}}
 
 
-    {{--var headlinePic = $('#customFile').val();--}}
+             {{--if(!headlinePicReg.test(headlinePic)){--}}
 
-    {{--var text = $('#inputText').val();--}}
+                 {{--errorArray.push('Bad picture.');--}}
+
+             {{--}--}}
+
+             {{--var text = $('#inputText').val();--}}
+
+             {{--var textReg = /^[\s\S]*$/;--}}
+
+             {{--if(!textReg.test(text)) {--}}
+
+                 {{--errorArray.push("Bad text.");--}}
+             {{--}--}}
+
+             {{--var otherPic = $('#customOther').val();--}}
+
+             {{--if(otherPic != null) {--}}
 
 
-    {{--var otherPic = $('#customOther').val();--}}
+                 {{--if(!headlinePicReg.test(otherPic)){--}}
 
+                     {{--errorArray.push('Bad picture.');--}}
 
-
-    {{--$.ajax({--}}
-
-    {{--method:'POST',--}}
-    {{--url:'/articles' ,--}}
-    {{--data:{--}}
-    {{--inputHeadline: headline,--}}
-    {{--customFile: headlinePic,--}}
-    {{--inputText: text,--}}
-    {{--customOther: otherPic,--}}
-    {{--_token: '{{csrf_token()}}'--}}
-
-    {{--},--}}
-    {{--dataType:'json',--}}
-    {{--success:function () {--}}
-
-    {{--},--}}
-    {{--error:function (jqXHR, exception) {--}}
-
-    {{--var status = jqXHR.status;--}}
-    {{--var errObj=jQuery.parseJSON(jqXHR.responseText);--}}
-
-    {{--// if(status == 422){--}}
-    {{--//--}}
-    {{--//--}}
-    {{--//     $("#ajax_error").append('<li>'+errObj.errors.inputHeadline+'</li>');--}}
-    {{--//     $("#ajax_error").append('<li>'+errObj.errors.customFile+'</li>');--}}
-    {{--//     $("#ajax_error").append('<li>'+errObj.errors.inputText+'</li>');--}}
-    {{--//     $("#ajax_error").append('<li>'+errObj.errors.customOther+'</li>');--}}
-    {{--//     $('#ajax_error').show();--}}
-    {{--// }--}}
+                 {{--}--}}
+             {{--}--}}
 
 
 
-    {{--// if(status == 422){--}}
-    {{--//--}}
-    {{--//     alert(Status);--}}
-    {{--// }--}}
-    {{--//--}}
-    {{--// } });--}}
-    {{--//--}}
-    {{----}}
+
+             {{--if(errorArray.length > 0 ){--}}
+
+                 {{--var displayError = "<ul>";--}}
+
+                 {{--for(var i in errorArray){--}}
+
+                     {{--displayError += "<li>" + errorArray[i] + "</li>";--}}
+                 {{--}--}}
+
+                 {{--displayError += "</ul>";--}}
+
+
+                 {{--$("#insert_error").html(displayError);--}}
+                 {{--$('#insert_error').show();--}}
+
+                {{--return false;--}}
+
+             {{--}else{--}}
+
+                 {{--return true--}}
+             {{--}--}}
+
+
+        {{--}--}}
+
+
+        {{--$(document).ready(function() {--}}
+
+            {{--$(".btn-success").click(function(){--}}
+                {{--var html = $(".clone").html();--}}
+                {{--$(".increment").after(html);--}}
+            {{--});--}}
+
+            {{--$("body").on("click",".btn-danger",function(){--}}
+                {{--$(this).parents(".control-group").remove();--}}
+            {{--});--}}
+
+        {{--});--}}
+
+    {{--</script>--}}
+
+
+
 
 
 

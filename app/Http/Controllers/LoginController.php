@@ -67,10 +67,23 @@ class LoginController extends Controller
 
         $user_obj = new Users();
 
-        $user_art = $user_obj->user_articles($id);
 
+        try {
+            $user_art = $user_obj->user_articles($id);
 
-        return Json::encode($user_art);
+            if($user_art->isEmpty()){
+
+                return response('error',404);
+            }else {
+
+                return Json::encode($user_art);
+            }
+
+        }catch(\Exception $e){
+            \Log::info('Failed to show user articles  error: '.$e->getMessage());
+            return \response('Error',400);
+        }
+
 
     }
 

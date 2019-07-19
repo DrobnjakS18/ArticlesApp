@@ -59,7 +59,7 @@
                 dataType: 'json',
                 success: function (data) {
 
-
+                    console.log(data);
                     var tmp = "";
                     for (var i in data) {
 
@@ -83,8 +83,25 @@
 
                     $('.user_aritcle').html(tmp);
                 },
-                error: function () {
+                error: function (xhr,Status,Error) {
 
+                    var status = xhr.status;
+
+                    switch (status) {
+
+                        case 404:
+                            alert('Failed to find user articles.');
+                            break;
+                        case 400:
+                            alert('Bad request.');
+                            break;
+                        default:
+                            alert('Failed to delete image.Error' +Status);
+                            break;
+
+
+
+                    }
                 }
             })
         });
@@ -94,13 +111,30 @@
 
             $.ajax({
                 method:'GET',
-                url:'/articles/delete/'+id,
+                url:'/articles/delete/'+ id,
                 dataType:'json',
-                success:function () {
-
+                success:function (data) {
+                        alert(data);
                 },
-                error:function () {
+                error:function (xhr,Status,Error) {
 
+                    var status = xhr.status;
+
+                    switch (status) {
+
+                        case 404:
+                            alert('Failed to delete image.');
+                            break;
+                        case 400:
+                            alert('Failed to delete image.Bad request');
+                            break;
+                        default:
+                            alert('Failed to delete image.Error' +Status);
+                            break;
+
+
+
+                    }
                 }
             });
         }

@@ -53,14 +53,17 @@ class HomeContoller extends Controller
         if($request->customOther == null) {
 
 
-
             $request->validate([
 
                 'inputHeadline' => 'required|regex:/^[A-Z0-9][A-z0-9\s!?.:]{1,50}$/',
-                'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
+//                'customFile' => 'required|file|mimes:jpg,jpeg,png|max:2000',
+                'customFile' => ['required', 'regex:/\.(jpe?g|png)$/'],
                 'inputText' => 'required|regex:/^[\s\S]*$/',
             ]);
 
+
+
+            $arr = explode('\\',$request->customFile);
 
 
             $article_obj = new Article();
@@ -69,31 +72,43 @@ class HomeContoller extends Controller
             $article_obj->text = $request->inputText;
             $article_obj->userid = session('user')->id;
 
-            $picHead = $request->file('customFile');
+
+            $picHead = $_FILES['customFile'];
+
+            dd($picHead);
 
 
-            $picName = $picHead->getClientOriginalName();
+            $picName = $arr[2];
             $picName = time().$picName;
 
-            try {
-
-                $picHead->move(public_path('images/'),$picName);
 
 
-                $article_obj->headPic = $picName;
-
-
-                $article_obj->insertOnlyheadline();
-
-
-
-                return redirect()->back()->with('insert_article','Article successfully inserted');
-
-            }catch (\Exception $e){
-
-                \Log::info('Failed to insert article  error: '.$e->getMessage());
-                return redirect()->back()->with('insert_article_error',"Article with no other pictures erroe");
-            }
+//
+//            $picHead = $request->file('customFile');
+//
+//
+//            $picName = $picHead->getClientOriginalName();
+//            $picName = time().$picName;
+//
+//            try {
+//
+//                $picHead->move(public_path('images/'),$picName);
+//
+//
+//                $article_obj->headPic = $picName;
+//
+//
+//                $article_obj->insertOnlyheadline();
+//
+//
+//
+//                return redirect()->back()->with('insert_article','Article successfully inserted');
+//
+//            }catch (\Exception $e){
+//
+//                \Log::info('Failed to insert article  error: '.$e->getMessage());
+//                return redirect()->back()->with('insert_article_error',"Article with no other pictures erroe");
+//            }
 
 
 
@@ -148,12 +163,12 @@ class HomeContoller extends Controller
 
             $article_obj->insert();
 
-            return redirect()->back()->with('insert_article_other_pic','Article successfully inserted');
+            return redirect()->back()->with('insert_article','Article successfully inserted');
 
         }catch (\Exception $e){
 
             \Log::info('Failed to insert article  error: '.$e->getMessage());
-            return redirect()->back()->with('insert_article_error_other_pic',"Article with other pictures error");
+            return redirect()->back()->with('insert_article_error',"Article with other pictures error");
 
 
         }
@@ -179,7 +194,12 @@ class HomeContoller extends Controller
         $article_ojb = new Article();
 
         $single = $article_ojb->getOne($id);
+        $other_pic = $article_ojb->getOtherPicByArt($id);
+
         $this->data['single'] = $single;
+        $this->data['other_pic'] = $other_pic;
+
+
 
         if($single == null) {
 
@@ -187,7 +207,6 @@ class HomeContoller extends Controller
             $this->data['single'] = $single;
         }
 
-//        dd($single);
 
         return view('pages.post',$this->data);
     }
@@ -439,7 +458,6 @@ class HomeContoller extends Controller
         try{
             $article = $article_obj->getOne($id);
 
-
             if($article == null)
             {
 
@@ -455,22 +473,23 @@ class HomeContoller extends Controller
 
                 if (file_exists($putanja)){
                     if (unlink($putanja)) {
-
+                        $success = "Image succesfully deleted";
+                        return Json::encode($success);
                     } else {
                         \Log::info('Failed to delete article  error.');
+                        return \response('Error',404);
                     }
                 } else {
                     \Log::info('Failed to delete article  error.');
+                    return \response('Error',404);
                 }
 
 
 
             }else {
 
-                $pic_obj = new Article();
 
-
-                $other_pic = $pic_obj->getOtherPicByArt($id);
+                $other_pic = $article_obj->getOtherPicByArt($id);
 
 
                 $putanja = [];
@@ -478,19 +497,19 @@ class HomeContoller extends Controller
 
                 foreach ($other_pic as $pic)
                 {
-                    array_push($pic_obj->otherPicID,$pic->pic_id);
+                    array_push($article_obj->otherPicID,$pic->pic_id);
                     array_push($putanja,public_path('images/').$pic->other_path);
                 }
 
-                $headline_pioc = $pic_obj->getOneNoOtherPIctures($id);
+                $headline_pioc = $article_obj->getOneNoOtherPIctures($id);
 
                 array_push($putanja,public_path('images/').$headline_pioc->path);
 
 
 
-                $pic_obj->id = $id;
+                $article_obj->id = $id;
 
-                $pic_obj->deletOtherPictures();
+                $article_obj->deletOtherPictures();
 
 
                 foreach ($putanja as $path){
@@ -498,17 +517,21 @@ class HomeContoller extends Controller
                     }
 
 
-
+                $success = "Image succesfully deleted";
+                return Json::encode($success);
             }
 
         }catch(\Exception $e){
 
             \Log::info('Failed to delete article  error: '.$e->getMessage());
+            return \response('Error',400 );
         }
 
 
 
     }
+
+
 
     public function deleteOther($id){
 
@@ -527,14 +550,16 @@ class HomeContoller extends Controller
 
             if (unlink($putanja)) {
 
-
+                $success = "Image succesfully deleted";
+                return Json::encode($success);
             } else {
-                \Log::info('Failed to delete article  error.');
-
+                \Log::info('Failed to delete image  error.');
+                return \response('Error',404);
             }
 
         }catch(\Exception $e) {
-            \Log::info('Failed to delete other pictures  error: '.$e->getMessage());
+            \Log::info('Failed to delete other image  error: '.$e->getMessage());
+            return \response('Error',400 );
 
         }
 

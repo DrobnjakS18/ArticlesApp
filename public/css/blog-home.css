@@ -59,3 +59,95 @@ body {
 
   display: flex;
 }
+
+
+/*SLAJDER*/
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
+
+
+.slider{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  margin:20px auto 0 auto;
+  margin-bottom: 50px;
+}
+
+.one_pic{
+
+  margin-bottom: 50px;
+
+}
+
+.slider ul{
+  position:relative;
+  width:100%;
+  margin:0;
+  padding:0;
+  height:200px;
+  display:inline-block;
+  list-style:none;
+  background:#458;
+}
+
+
+.slider ul li{
+  position:relative;
+  float:left;
+  display:inline-block;
+  margin:0;
+  padding:0;
+  width:750px;
+  height:450px;
+  background:#fff;
+  text-align:center;
+  line-height:300px;
+  color:#333;
+}
+
+
+.control{
+  position: absolute;
+  top: 40%;
+  z-index: 999;
+  display: block;
+  padding: 4% 3%;
+  width: auto;
+  height: auto;
+  background: #2a2a2a;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.prev{
+  left:0px;
+}
+
+.next{
+  right:0px;
+}
+
+.c.c{
+  background:#222;
+  color:#fff;
+}
+
+.r.r{
+  background:red;
+  color:#fff;
+}
+
+.g.g{
+  background:#999;
+  color:#fff;
+}
+
+.b.b{
+  background:blue;
+  color:#fff;
+}
